@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+ <H3>
+     数据展示
+ </H3>
+ <p id="data"></p>
+<script>
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+
+    function getToken(code) {
+        $.ajax({
+            url: "/accessToken",
+            data:JSON.stringify({code: code}),
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            success: function(data) {
+               if(data.code===0){
+                   getResource(data.data.openId)
+               }else {
+                   console.error(data.message);
+               }
+            },
+            error: function (data) {
+                console.log(data.status)
+                console.log(data.responseText.body)
+            }
+        });
+    }
+    function getResource(openId) {
+        $.ajax({
+            url: "/resource",
+            data:JSON.stringify({openId:openId}),
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            success: function(data) {
+                console.log(data)
+            },
+            error: function (data) {
+                console.log(data.status)
+                console.log(data.responseText.body)
+            }
+        });
+    }
+    var code = getQueryString("code");
+    if(code){
+        console.log(code)
+        getToken(code)
+    }else {
+        window.location.href = "/login";
+    }
+
+</script>
+</body>
+</html>

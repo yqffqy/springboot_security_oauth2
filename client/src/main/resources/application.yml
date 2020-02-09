@@ -1,0 +1,50 @@
+server:
+  port: 8082
+  servlet:
+    session:
+      timeout: 10s
+
+spring:
+  application:
+    name: client-server
+
+#resource:
+#  token_info_uri: http://localhost:8080/oauth/check_token
+
+#配置请求头
+headers:
+  - {
+    Content-Type: application/x-www-form-urlencoded
+  }
+
+#资源服务器配置
+resource:
+  first:
+    type: get
+    url: http://127.0.0.1:8081/resource
+    body: {
+
+    }
+    headers:
+      Content-Type: ${headers[0].Content-Type}
+
+#认证服务器配置
+auth:
+  first:
+    type: post
+    url: http://localhost:8080/oauth/token
+    body: {
+      grant_type: authorization_code,
+      redirect_uri: http://127.0.0.1:8082/index,
+      scope: all,
+      code: null
+    }
+    headers:
+      Content-Type: ${headers[0].Content-Type}
+
+#客户端信息
+client:
+  clientId: client
+  clientSecret: 123
+
+
